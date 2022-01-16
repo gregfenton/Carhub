@@ -1,42 +1,65 @@
-import Typography from "@mui/material/Typography"
-import React from 'react';
-import { makeStyles } from '@mui/styles';
-import { Button, TextField } from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import { Avatar, Button, Checkbox, FormControlLabel, Grid, Link, Paper, TextField, Typography } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { LockOpenOutlined, LockOutlined } from '@mui/icons-material';
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        display: "inline-grid",
-        margin: "auto",
-        position:"fixed",
-        top: "50%",
-        left: "50%",
-        width:"30em",
-        height:"18em",
-        marginTop: "-9em", 
-        marginLeft: "-15em", 
-        border: "1px solid #ccc",
+    paper: {
+        padding: 20,
+        height: "100%",
+        width: "60%",
+        margin: "0 auto !important",
     },
-    loginButton: {
-        border: "1px solid #ccc",
-        width: "30%",
-        height: "80%",
-        margin: "auto"
+    avatar: {
+        background: "gray",
+        marginBottom: "2vh"
     },
-    loginText: {
-        margin: "auto"
+    button: {
+        margin: '8px 0'
     }
 }));
 
+// #61892F
+// #86C232
+// #222629
+// #474B4f
+// #6B6E70
+
 export default function LoginPage() {
     const classes = useStyles();
-    return (
-        <>
-            <div className={classes.root}>
-                <Typography className ={classes.loginText}>Login</Typography>
-                <TextField id="filled-basic" label="Email Adresse" variant="standard"></TextField>
-                <TextField id="filled-basic" label="Passwort" variant="standard" />
-                <Button className={classes.loginButton}>Login</Button>
-            </div>
-        </>
-    );
+    
+    return (<>
+        <Grid>
+            <Paper elevation={10} className={classes.paper}>
+                <Grid container
+                    spacing={0}
+                    direction="column"
+                    alignItems="center">
+                    <h2>Sign in</h2>
+                    <Avatar className={classes.avatar}><LockOutlined /></Avatar>
+                    <TextField label="Email adresse" placeholder="Email adresse" fullWidth required variant="standard"></TextField>
+                    <TextField label="Passwort" placeholder="Password" required fullWidth type="password" variant="standard"></TextField>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                name="checkedB"
+                                color="primary"
+                            />
+                        }
+                        label="Remember me"
+                    />
+                    <Button type='submit' color='primary' variant="contained" className={classes.button} fullWidth>Sign in</Button>
+                    <Typography >
+                        <Link href="#" >
+                            Forgot password?
+                        </Link>
+                    </Typography>
+                    <Typography > Do you have an account? 
+                        <Link href="#" style={{marginLeft: "1vh"}}>Sign Up</Link>
+                    </Typography>
+                </Grid>
+
+            </Paper>
+        </Grid>
+    </>);
 }

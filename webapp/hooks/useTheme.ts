@@ -1,16 +1,16 @@
-import { createTheme  } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
 // Create a theme instance.
-const theme = createTheme ({
+const theme = createTheme({
   palette: {
     primary: {
-      main: '#556cd6',
+      main: "#556cd6",
     },
     secondary: {
-      main: '#19857b',
+      main: "#19857b",
     },
     background: {
-      default: '#fff',
+      default: "#222629",
     },
   },
 });

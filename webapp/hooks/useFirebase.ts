@@ -11,8 +11,8 @@ const clientCredentials = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(clientCredentials);
-}
+const app = firebase.initializeApp(clientCredentials);
 
-export default firebase;
+
+export const auth = app.auth();
+export default app;

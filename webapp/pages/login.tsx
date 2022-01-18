@@ -3,6 +3,7 @@ import { Avatar, Button, Checkbox, FormControlLabel, Grid, Link, Paper, TextFiel
 import makeStyles from "@mui/styles/makeStyles";
 import { LockOpenOutlined, LockOutlined } from '@mui/icons-material';
 import firebase from 'firebase/compat/app';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -10,6 +11,8 @@ const useStyles = makeStyles(theme => ({
         height: "100%",
         width: "60%",
         margin: "0 auto !important",
+        maxWidth: "500px",
+        maxheight: "500px",
     },
     avatar: {
         background: "gray",
@@ -28,6 +31,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function LoginPage() {
     const classes = useStyles();
+    const router = useRouter();
 
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
@@ -66,15 +70,19 @@ export default function LoginPage() {
         }
     }
 
-    const signInWithEmailAndPassword = async (email: string, password: string) => {
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        // check email 
 
-        try {
-            await auth.signInWithEmailAndPassword(email, password);
-        } catch (err) {
-            console.error(err);
+    const signInWithEmailAndPassword = async () => {
+        if (email != null && password != null) {
+
+            const auth = firebase.auth();
+            const db = firebase.firestore();
+            // check email 
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (err) {
+                console.error(err);
+            }
         }
     };
 
@@ -96,8 +104,6 @@ export default function LoginPage() {
             console.error(err);
         }
     };
-
-
 
     return (<>
         <Grid>
@@ -128,8 +134,8 @@ export default function LoginPage() {
                             Forgot password?
                         </Link>
                     </Typography>
-                    <Typography > Do you have an account?
-                        <Link href="#" style={{ marginLeft: "1vh" }}>Sign Up</Link>
+                    <Typography > Do you have no account?
+                        <Link href="/register" style={{ marginLeft: "1vh" }}>Sign Up</Link>
                     </Typography>
                 </Grid>
 

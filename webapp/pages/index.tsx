@@ -1,11 +1,14 @@
 import { Container } from "@mui/material";
-import LoginPage from "./login";
+import React from "react";
+import ReactDOM from "react-dom";
+import Login from "./login";
 
 
 export default function Start() {
-    return (
-        <Container style={{justifyContent: 'center', alignItems: "center"}}>
-            <LoginPage />
-        </Container>
+    return (<Container>
+        <Login />
+    </Container>
     );
 }
+
+

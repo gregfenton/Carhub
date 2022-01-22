@@ -1,15 +1,7 @@
 import firebase from "firebase/compat/app";
 import "firebase/auth";
 import "firebase/compat/auth";
-import {
-  getFirestore,
-  query,
-  getDocs,
-  collection,
-  where,
-  addDoc,
-  initializeFirestore,
-} from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -21,10 +13,5 @@ const firebaseConfig = {
 };
 
 const app = firebase.initializeApp(firebaseConfig);
-
-
 export const auth = firebase.auth();
-
 export const db = getFirestore(app);
-// export const db = initializeFirestore(app, {useFetchStreams:false} as any)
-

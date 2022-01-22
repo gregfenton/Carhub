@@ -7,52 +7,62 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { Button, Col, Container, Form, Navbar, Row } from "react-bootstrap";
 import { auth, db } from "../config/firebaseConfig";
 import { AuthContext } from "../contexts/AuthContext";
+import "firebase/compat/app";
+import "firebase/compat/firestore";
+import "firebase/compat/functions";
+import "firebase/compat/auth";
 
-function App() {
+import "firebase/app";
+import "firebase/firestore";
+import "firebase/functions";
+import "firebase/auth";
+
+export default function App() {
     const user = useContext(AuthContext);
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
 
+    useEffect(() => {
+        firebase.auth().onAuthStateChanged(async (user) => {
+            const userObject = {
+                uid: user?.uid,
+                authProvider: 'local',
+                email: user?.email,
+            };
+
+            const docRef = await addDoc(collection(db, 'user'), userObject);
+            console.log('Document written with ID: ', docRef);
+        });
+    })
+
     const createAccount = async () => {
-        let res;
         try {
-            res = await auth.createUserWithEmailAndPassword(
+            const res = await auth.createUserWithEmailAndPassword(
                 emailRef.current!.value,
                 passwordRef.current!.value
             );
+
+            const createdUser = res?.user;
         } catch (err) {
             console.log(err);
         }
-
-        firebase.auth().onAuthStateChanged(async (user) => {
-            console.log(user)
-            const userObject = {
-                uid: user?.uid,
-                authProvider: "local",
-                email: user?.email,
-            }
-
-            const docRef = await addDoc(collection(db, "user"), userObject);
-            console.log("Document written with ID: ", docRef);
-        })
     }
 
     const [loginUser, setLoginUser] = useState({});
 
-    useEffect(() => {
-        console.log(loginUser)
-    }, [loginUser])
-
     const signIn = async () => {
-        await auth.signInWithEmailAndPassword(
-            emailRef.current!.value,
-            passwordRef.current!.value
-        ).then((userCredential) => {
-            if (userCredential.user != null) setLoginUser(userCredential?.user);
-        }).catch((error) => {
-            setErrorCode(error.code);
-            setErrorMessage(error.message);
-        })
+        try {
+            let userCredential = await auth.signInWithEmailAndPassword(
+                emailRef.current!.value,
+                passwordRef.current!.value
+            );
+
+            if (userCredential.user != null) {
+                setLoginUser(userCredential?.user);
+            }
+        } catch (ex) {
+            console.log(ex);
+        }
     };
 
     const signOut = async () => {
@@ -104,5 +114,3 @@ function App() {
         </>
     );
 }
-
-export default App;

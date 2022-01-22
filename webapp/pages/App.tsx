@@ -1,4 +1,3 @@
-
 import { CircularProgress } from "@mui/material";
 import { User } from "firebase/auth";
 import firebase from "firebase/compat/app";
@@ -18,30 +17,46 @@ import "firebase/functions";
 import "firebase/auth";
 
 export default function App() {
+    // I'm not clear what the purpose of this AuthContext is?
     const user = useContext(AuthContext);
+
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
+    const [loginUser, setLoginUser] = useState(null);
+    const [isFirstLogin, setIsFirstLogin] = useState(null);
 
+    // listen for changes to auth state.  On sign out, `user` will be null.
     useEffect(() => {
-        let stopListenerFn = firebase.auth().onAuthStateChanged(async (user) => {
-            const userObject = {
-                uid: user?.uid,
-                authProvider: 'local',
-                email: user?.email,
-            };
-
-            const docRef = await addDoc(collection(db, 'user'), userObject);
-            console.log('Document written with ID: ', docRef);
-        });
+        let stopListenerFn = firebase
+            .auth()
+            .onAuthStateChanged(async (user) => {
+                setLoginUser(user);
+            });
 
         return stopListenerFn;
     }, []);
 
+    // testing :)
     useEffect(() => {
         console.log("This component is being mounted!!!");
     
         return () => { console.log("Unmounting now!"); }
       }, []);
+
+    // if this is their first time logging in, create a profile doc
+    useEffect(() => {
+        if (loginUser && isFirstLogin) {
+            const userObject = {
+                uid: loginUser.uid,
+                authProvider: "local",
+                email: loginUser.email,
+            };
+
+            const docRef = await addDoc(collection(db, "user"), userObject);
+            console.log("Document written with ID: ", docRef);
+            setIsFirstLogin(false);
+        }
+    }, [loginUser, isFirstLogin]);
 
     const createAccount = async () => {
         try {
@@ -50,13 +65,11 @@ export default function App() {
                 passwordRef.current!.value
             );
 
-            const createdUser = res?.user;
+            setIsFirstLogin(true);
         } catch (err) {
             console.log(err);
         }
-    }
-
-    const [loginUser, setLoginUser] = useState({});
+    };
 
     const signIn = async () => {
         try {
@@ -65,8 +78,9 @@ export default function App() {
                 passwordRef.current!.value
             );
 
-            if (userCredential.user != null) {
-                setLoginUser(userCredential?.user);
+            if (userCredential?.user) {
+                setLoginUser(userCredential.user);
+                setIsFirstLogin(false);
             }
         } catch (ex) {
             console.log(ex);

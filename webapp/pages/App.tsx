@@ -23,7 +23,7 @@ export default function App() {
     const passwordRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        firebase.auth().onAuthStateChanged(async (user) => {
+        let stopListenerFn = firebase.auth().onAuthStateChanged(async (user) => {
             const userObject = {
                 uid: user?.uid,
                 authProvider: 'local',
@@ -33,7 +33,15 @@ export default function App() {
             const docRef = await addDoc(collection(db, 'user'), userObject);
             console.log('Document written with ID: ', docRef);
         });
-    })
+
+        return stopListenerFn;
+    }, []);
+
+    useEffect(() => {
+        console.log("This component is being mounted!!!");
+    
+        return () => { console.log("Unmounting now!"); }
+      }, []);
 
     const createAccount = async () => {
         try {

@@ -45,16 +45,23 @@ export default function App() {
 
     // if this is their first time logging in, create a profile doc
     useEffect(() => {
-        if (loginUser && isFirstLogin) {
+        const createFirstTimeDoc = async (loginUser) => {
             const userObject = {
                 uid: loginUser.uid,
                 authProvider: "local",
                 email: loginUser.email,
             };
 
-            const docRef = await addDoc(collection(db, "user"), userObject);
-            console.log("Document written with ID: ", docRef);
-            setIsFirstLogin(false);
+            try {
+                const docRef = await addDoc(collection(db, "user"), userObject);
+                console.log("Document written with ID: ", docRef);
+                setIsFirstLogin(false);
+            } catch(ex) {
+                console.log(`FIRST TIME got an exception: ${ex.message}`);
+            }
+        }
+        if (loginUser && isFirstLogin) {
+            createFirstTimeDoc(loginUser);
         }
     }, [loginUser, isFirstLogin]);
 
